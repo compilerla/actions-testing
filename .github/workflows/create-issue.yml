@@ -26,4 +26,5 @@ jobs:
             --title "Send monthly update to D5 for ${{ steps.set_output.outputs.month }}" \
             --body "## To-Do\n\n- [ ] Inform D5 transit reps of any updates regarding district agencies or relevant Cal-ITP news from ${{ steps.set_output.outputs.month }}" \
             --label "reporting" \
-            --assignee Scotchester
+            --assignee Scotchester \
+            --repo $GITHUB_REPOSITORY
