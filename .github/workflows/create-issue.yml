@@ -21,10 +21,13 @@ jobs:
       - id: create_issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # The `--body-file -` option below uses the multiline content from stdin for the body.
+        # See: https://github.com/cli/cli/issues/595
         run: |
+          echo -e "## To-Do\n\n- [ ] Inform D5 transit reps of any updates regarding district agencies or relevant Cal-ITP news from ${{ steps.set_output.outputs.month }}" | \
           gh issue create \
             --title "Send monthly update to D5 for ${{ steps.set_output.outputs.month }}" \
-            --body "## To-Do\n\n- [ ] Inform D5 transit reps of any updates regarding district agencies or relevant Cal-ITP news from ${{ steps.set_output.outputs.month }}" \
+            --body-file - \
             --label "reporting" \
             --assignee Scotchester \
             --repo $GITHUB_REPOSITORY
