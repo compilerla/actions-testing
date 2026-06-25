@@ -19,6 +19,8 @@ jobs:
           echo "month=$(date -d 'last month' +%B)" >> $GITHUB_OUTPUT
 
       - id: create_issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh issue create \
             --title "Send monthly update to D5 for ${{ steps.set_output.outputs.month }}" \
