@@ -1,0 +1,25 @@
+name: Testing installation of Python dependencies via pylock.toml
+on: workflow_dispatch
+
+jobs:
+  check-migrations-and-messages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gettext
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: .github/workflows/.python-version
+          cache: pip
+          cache-dependency-path: "**/pyproject.toml"
+
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install --no-deps -r pylock.toml
