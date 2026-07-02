@@ -19,7 +19,15 @@ jobs:
           cache: pip
           cache-dependency-path: "**/pyproject.toml"
 
-      - name: Install Python dependencies
+      # See what pylock.toml looks like if created here
+      - name: Update lockfile
         run: |
           pip install --upgrade pip
-          pip install --no-deps -r pylock.toml
+          pip lock .
+      - name: Diff vs. previously checked-in pylock.tomlgit diff
+        run: git diff
+
+      # - name: Install Python dependencies
+      #   run: |
+      #     pip install --upgrade pip
+      #     pip install --no-deps -r pylock.toml
