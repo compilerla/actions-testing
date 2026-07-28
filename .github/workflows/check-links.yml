@@ -7,7 +7,7 @@ jobs:
   linkchecker:
     runs-on: ubuntu-latest
     # We only want to run this after the Netlify deploy preview has successfully been deployed.
-    if: ${{ github.event.check_run.name == 'netlify/cal-itp-mobility-marketplace/deploy-preview' && github.event.check_run.conclusion == 'success' }}
+    if: ${{ github.event.check_run.name == 'netlify/compiler-actions-testing/deploy-preview' && github.event.check_run.conclusion == 'success' }}
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # 7.0.1
@@ -19,3 +19,11 @@ jobs:
       - run: |
           pip install linkchecker
           linkchecker --check-extern -v ${{ github.event.check_run.details_url }}
+
+  debug-event-context:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          EVENT_CONTEXT: ${{ toJSON(github.event) }}
+        run: |
+          echo $EVENT_CONTEXT
