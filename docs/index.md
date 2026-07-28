@@ -3,7 +3,7 @@
 This website provides technical documentation for the [`benefits`][benefits-repo] application from the
 [California Integrated Travel Project (Cal-ITP)][calitp].
 
-![Cal-ITP Benefits Mockup1200x900](https://github.com/user-attachments/assets/d3cc462b-c2f3-42dd-b1f6-5d50c8efea85)
+![Cal-ITP Benefits shown on a browser on both a laptop and a phone](https://github.com/user-attachments/assets/d3cc462b-c2f3-42dd-b1f6-5d50c8efea85)
 
 [Cal-ITP Benefits](https://benefits.calitp.org) is a web application that enables digital eligibility verification and enrollment for transit benefits onto transit riders’ existing contactless debit and credit cards.
 
