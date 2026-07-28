@@ -24,7 +24,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip lock .
-      - name: Diff vs. previously checked-in pylock.tomlgit diff
+      - name: Diff vs. previously checked-in pylock.toml
         run: git diff
 
       # - name: Install Python dependencies
