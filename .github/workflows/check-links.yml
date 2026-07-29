@@ -20,8 +20,12 @@ jobs:
         run: npm start
         background: true
 
-      - name: Install linkchecker
-        run: pip install linkchecker
+      - parallel:
+          - name: Wait for server to be ready
+            run: npx -y wait-on http://localhost:8080
+
+          - name: Install linkchecker
+            run: pip install linkchecker
 
       - name: Run linkchecker
         run: linkchecker --check-extern -v http://localhost:8080
