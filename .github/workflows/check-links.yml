@@ -15,12 +15,13 @@ jobs:
         with:
           persist-credentials: false  # since the next step does not need it
 
-      - parallel:
-          - name: Start 11ty dev server
-            run: npm start
+      - name: Start 11ty dev server
+        id: server
+        run: npm start
+        background: true
 
-          - name: Install linkchecker
-            run: pip install linkchecker
+      - name: Install linkchecker
+        run: pip install linkchecker
 
       - name: Run linkchecker
         run: linkchecker --check-extern -v http://localhost:8080
