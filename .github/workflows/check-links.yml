@@ -1,49 +1,26 @@
 name: Check links
 
 on:
-  status
+  pull_request:
+    paths:
+      - 'docs'
 
 jobs:
   linkchecker:
     runs-on: ubuntu-latest
-    # We only want to run this after the Netlify deploy preview has successfully been deployed.
-    if: >-
-      github.event.context == 'netlify/compiler-actions-testing/deploy-preview' &&
-      github.event.state == 'success'
-    permissions:
-      checks: write
-      contents: read
-    steps:
-      - uses: LouisBrunner/checks-action@v2.0.0
-        id: init
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ github.event.commit.sha }}
-          name: Check for broken links
-          details_url: ${{ format('https://github.com/compilerla/actions-testing/actions/runs/{0}', github.run_id) }}
-          status: in_progress
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # 7.0.1
-        with:
-          persist-credentials: false # since the next step does not need it
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 #7.0.0
-        with:
-          python-version: "3.12"
-      - run: pip install linkchecker
-      - run: linkchecker --check-extern -v ${{ github.event.target_url }}
-        id: linkchecker_results
-      - uses: LouisBrunner/checks-action@v2.0.0
-        if: ${{ always() }}
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          check_id: ${{ steps.init.outputs.check_id }}
-          details_url: ${{ format('https://github.com/compilerla/actions-testing/actions/runs/{0}', github.run_id) }}
-          status: completed
-          conclusion: ${{ job.status }}
 
-  debug-event-context:
-    runs-on: ubuntu-latest
     steps:
-      - env:
-          EVENT_CONTEXT: ${{ toJSON(github.event) }}
-        run: |
-          echo $EVENT_CONTEXT
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # 7.0.1
+        with:
+          persist-credentials: false  # since the next step does not need it
+
+      - parallel:
+          - name: Start 11ty dev server
+            run: npm start
+
+          - name: Install linkchecker
+            run: pip install linkchecker
+
+      - name: Run linkchecker
+        run: linkchecker --check-extern -v http://localhost:8080
