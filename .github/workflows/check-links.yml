@@ -1,4 +1,5 @@
-name: "Check links"
+name: Check links
+
 on:
   status
 
@@ -13,6 +14,14 @@ jobs:
       checks: write
       contents: read
     steps:
+      - uses: LouisBrunner/checks-action@v2.0.0
+        id: init
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sha: ${{ github.event.commit.sha }}
+          name: Check for broken links
+          details_url: https://github.com/compilerla/actions-testing/actions/runs/${{ github.run_id }}
+          status: in_progress
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # 7.0.1
         with:
           persist-credentials: false # since the next step does not need it
@@ -26,8 +35,8 @@ jobs:
         if: ${{ always() }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ github.event.commit.sha }}
-          name: "Check links"
+          check_id: ${{ steps.init.outputs.check_id }}
+          status: completed
           conclusion: ${{ job.status }}
 
   debug-event-context:
