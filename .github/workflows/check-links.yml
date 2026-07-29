@@ -28,7 +28,8 @@ jobs:
             run: pip install linkchecker
 
       - name: Run linkchecker
-        run: linkchecker --check-extern -v http://localhost:8080
+        id: linkchecker
+        run: linkchecker --config=linkcheckerrc --check-extern -v http://localhost:8080
 
       - name: Stop 11ty
         cancel: server
