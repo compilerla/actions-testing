@@ -3,7 +3,7 @@ name: Check links
 on:
   pull_request:
     paths:
-      - 'docs'
+      - 'docs/**'
 
 jobs:
   linkchecker:
