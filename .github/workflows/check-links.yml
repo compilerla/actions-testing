@@ -29,3 +29,6 @@ jobs:
 
       - name: Run linkchecker
         run: linkchecker --check-extern -v http://localhost:8080
+
+      - name: Stop 11ty
+        cancel: server
