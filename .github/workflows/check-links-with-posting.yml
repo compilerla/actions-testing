@@ -1,0 +1,66 @@
+name: Weekly Broken Link Check
+
+on:
+  workflow_dispatch:
+#   schedule:
+#     - cron: "0 9 * * MON"
+
+jobs:
+  linkchecker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # 7.0.1
+        with:
+          persist-credentials: false # since the next step does not need it
+
+      - name: Install dependencies
+        run: pip install linkchecker beautifulsoup4
+
+      - name: Run linkchecker
+        id: linkchecker
+        run: linkchecker --config=linkcheckerrc --check-extern --verbose --file-output=html/utf-8/results.html https://www.camobilitymarketplace.org
+
+      - name: Strip all but body contents
+        id: extract-report-body
+        # if: ${{ failure() }}
+        # fancy multiline output parameter definition (see: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#example-of-a-multiline-string)
+        # we want this in an output parameter so it can more easily be included in the comment posting commands
+        run: |
+          {
+            echo 'REPORT_BODY<<EOF'
+            python3 -c 'from bs4 import BeautifulSoup; print(BeautifulSoup(open("results.html").read(), "html.parser").body.decode_contents())'
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Check for an open linkchecker issue
+        id: open-issue-check
+        # if: ${{ failure() }}
+        run: echo "OPEN_ISSUE_ID=`gh issue list --label linkchecker --json number --jq '.[0].number'`" >> "$GITHUB_OUTPUT"
+
+      - name: Add content to existing issue
+        # if: ${{ failure() && steps.open-issue-check.outputs.OPEN_ISSUE_ID != '' }}
+        if: ${{ steps.open-issue-check.outputs.OPEN_ISSUE_ID != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo -e "### Updated broken link report\n\nFrom weekly run: https://github.com/cal-itp/mobility-marketplace/actions/runs/${{ github.run_id }}\n\n<details>${{ steps.extract-report-body.outputs.REPORT_BODY }}</details>\" | \
+          gh issue comment ${{ steps.open-issue-check.outputs.OPEN_ISSUE_ID }} \
+            --body-file - \
+            --repo $GITHUB_REPOSITORY
+
+      - name: Create new issue
+        # if: ${{ failure() && steps.open-issue-check.outputs.OPEN_ISSUE_ID == '' }}
+        if: ${{ steps.open-issue-check.outputs.OPEN_ISSUE_ID == '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # The `--body-file -` option below uses the multiline content from stdin for the body.
+        # See: https://github.com/cli/cli/issues/595
+        run: |
+          echo -e "## Broken link report\n\nDiscovered during weekly run: https://github.com/cal-itp/mobility-marketplace/actions/runs/${{ github.run_id }}\n\n<details>${{ steps.extract-report-body.outputs.REPORT_BODY }}</details>" | \
+          gh issue create \
+            --title "Broken links found" \
+            --body-file - \
+            --label "content,bug,linkchecker" \
+            --repo $GITHUB_REPOSITORY
