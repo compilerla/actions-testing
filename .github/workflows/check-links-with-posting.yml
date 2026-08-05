@@ -8,6 +8,8 @@ on:
 jobs:
   linkchecker:
     runs-on: ubuntu-latest
+    env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Check out
@@ -25,14 +27,7 @@ jobs:
       - name: Strip all but body contents
         id: extract-report-body
         # if: ${{ failure() }}
-        # fancy multiline output parameter definition (see: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#example-of-a-multiline-string)
-        # we want this in an output parameter so it can more easily be included in the comment posting commands
-        run: |
-          {
-            echo 'REPORT_BODY<<EOF'
-            python3 -c 'from bs4 import BeautifulSoup; print(BeautifulSoup(open("results.html").read(), "html.parser").body.decode_contents())'
-            echo EOF
-          } >> "$GITHUB_OUTPUT"
+        run: python3 -c 'from bs4 import BeautifulSoup; print(BeautifulSoup(open("results.html").read(), "html.parser").body.decode_contents())' > report_body.html
 
       - name: Check for an open linkchecker issue
         id: open-issue-check
@@ -42,25 +37,25 @@ jobs:
       - name: Add content to existing issue
         # if: ${{ failure() && steps.open-issue-check.outputs.OPEN_ISSUE_ID != '' }}
         if: ${{ steps.open-issue-check.outputs.OPEN_ISSUE_ID != '' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo -e "### Updated broken link report\n\nFrom weekly run: https://github.com/cal-itp/mobility-marketplace/actions/runs/${{ github.run_id }}\n\n<details>${{ steps.extract-report-body.outputs.REPORT_BODY }}</details>\" | \
+          echo -e "### Updated broken link report\n\nFrom weekly run: https://github.com/cal-itp/mobility-marketplace/actions/runs/${{ github.run_id }}\n\n<details>\n" > comment.md
+          cat report_body.html >> comment.md
+          echo -e "\n</details>" >> comment.md
           gh issue comment ${{ steps.open-issue-check.outputs.OPEN_ISSUE_ID }} \
-            --body-file - \
+            --body-file comment.md \
             --repo $GITHUB_REPOSITORY
 
       - name: Create new issue
         # if: ${{ failure() && steps.open-issue-check.outputs.OPEN_ISSUE_ID == '' }}
         if: ${{ steps.open-issue-check.outputs.OPEN_ISSUE_ID == '' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # The `--body-file -` option below uses the multiline content from stdin for the body.
         # See: https://github.com/cli/cli/issues/595
         run: |
-          echo -e "## Broken link report\n\nDiscovered during weekly run: https://github.com/cal-itp/mobility-marketplace/actions/runs/${{ github.run_id }}\n\n<details>${{ steps.extract-report-body.outputs.REPORT_BODY }}</details>" | \
+          echo -e "## Broken link report\n\nDiscovered during weekly run: https://github.com/cal-itp/mobility-marketplace/actions/runs/${{ github.run_id }}\n\n<details>\n" > comment.md
+          cat report_body.html >> comment.md
+          echo -e "\n</details>" >> comment.md
           gh issue create \
             --title "Broken links found" \
-            --body-file - \
+            --body-file comment.md \
             --label "content,bug,linkchecker" \
             --repo $GITHUB_REPOSITORY
