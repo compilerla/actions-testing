@@ -43,13 +43,10 @@ jobs:
           cat report_body.html >> comment.md
           echo -e "\n</details>" >> comment.md
           gh issue comment ${{ steps.open-issue-check.outputs.OPEN_ISSUE_ID }} \
-            --body-file comment.md \
-            --repo $GITHUB_REPOSITORY
+            --body-file comment.md
 
       - name: Create new issue
         if: ${{ always() && steps.open-issue-check.outputs.OPEN_ISSUE_ID == '' }}
-        # The `--body-file -` option below uses the multiline content from stdin for the body.
-        # See: https://github.com/cli/cli/issues/595
         run: |
           echo -e "## Broken link report\n\nDiscovered during weekly run: https://github.com/cal-itp/mobility-marketplace/actions/runs/${{ github.run_id }}\n\n<details>\n" > comment.md
           cat report_body.html >> comment.md
@@ -57,5 +54,4 @@ jobs:
           gh issue create \
             --title "Broken links found" \
             --body-file comment.md \
-            --label "content,bug,linkchecker" \
-            --repo $GITHUB_REPOSITORY
+            --label "content,bug,linkchecker"
