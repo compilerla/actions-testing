@@ -103,9 +103,12 @@ jobs:
           git add .
           git commit -m "docs(newsletter): add ${NEWSLETTER_NICENAME} to archive"
           git push --set-upstream origin "docs/add-newsletter-${NEWSLETTER_SLUG}"
+          PR_BODY=.github/workflows/add-newsletter-to-archive/pr-body-template.md
+          sed -i "s/{{NEWSLETTER_NICENAME}}/${NEWSLETTER_NICENAME}/g" $PR_BODY
+          sed -i "s/{{NEWSLETTER_SLUG}}/${NEWSLETTER_SLUG}/g" $PR_BODY
           gh pr create \
             --title "docs: adds ${NEWSLETTER_NICENAME} to newsletter archive" \
-            --body "Adds the **${NEWSLETTER_NICENAME}** newsletter to the archive in the docs." \
+            --body-file $PR_BODY \
             --label "documentation" \
             --assignee indexing \
             --draft
