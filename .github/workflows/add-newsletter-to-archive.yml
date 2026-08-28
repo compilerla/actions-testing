@@ -94,7 +94,7 @@ jobs:
           git switch -c "docs/add-newsletter-${NEWSLETTER_SLUG}"
           git add .
           git commit -m "docs(newsletter): add ${NEWSLETTER_NICENAME} to archive"
-          git push origin
+          git push --set-upstream origin "docs/add-newsletter-${NEWSLETTER_SLUG}"
           gh pr create \
             --title "docs: adds ${NEWSLETTER_NICENAME} to newsletter archive" \
             --body "Adds the **${NEWSLETTER_NICENAME}** newsletter to the archive in the docs." \
