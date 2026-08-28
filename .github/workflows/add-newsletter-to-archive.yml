@@ -82,7 +82,15 @@ jobs:
               lines.splice(currentYearIdx + 1, 0, newCard);
               content = lines.join("\n");
             } else {
-              core.warning("Newsletter index insertion point not found.");
+              core.error("Newsletter index insertion point not found.");
+              core.setFailed();
+            }
+
+            // Update the file
+            try {
+              fs.writeFileSync(filePath, content);
+            } catch (err) {
+              core.error("Error updating newsletter index:", err);
             }
 
       - name: Commit changes and open PR
