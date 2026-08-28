@@ -44,12 +44,12 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # 9.0.0
         with:
           script: |
-            import { readFileSync } from "fs";
+            const fs = require("fs")
             const { NEWSLETTER_NICENAME, NEWSLETTER_SLUG } = process.env;
 
             // Read the current index file
             const filePath = "docs/reference/newsletter-archive/index.md";
-            let content = readFileSync(filePath, "utf8");
+            let content = fs.readFileSync(filePath, "utf8");
 
             // Create the new card lines
             newCard = `
