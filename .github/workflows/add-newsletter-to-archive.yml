@@ -44,6 +44,7 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # 9.0.0
         with:
           script: |
+            import { readFileSync } from "fs";
             const { NEWSLETTER_NICENAME, NEWSLETTER_SLUG } = process.env;
 
             // Read the current index file
