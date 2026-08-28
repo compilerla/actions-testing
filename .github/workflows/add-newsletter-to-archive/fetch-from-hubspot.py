@@ -27,7 +27,8 @@ def scrape_and_store(url, send_time):
 
         # download image if we haven't yet
         decoded_filename = urllib.parse.unquote(filename)
-        download_path = f"docs/reference/newsletter-archive/exports/images/{decoded_filename}"
+        # path is relative to this Python script
+        download_path = f"../../../docs/reference/newsletter-archive/exports/images/{decoded_filename}"
         if not Path(download_path).exists():
             print(f"Downloading {decoded_filename} from {img_src_parsed._replace(query='').geturl()}")
             with open(download_path, mode="wb") as file:
@@ -43,7 +44,11 @@ def scrape_and_store(url, send_time):
     newsletter_nicename = send_time.strftime("%B %Y")  # August 2026
 
     # write the updated HTML to a file named YYYY-MM.html
-    with open(f"docs/reference/newsletter-archive/exports/{newsletter_slug}.html", "w") as file:
+    with open(
+        # path is relative to this Python script
+        f"../../../docs/reference/newsletter-archive/exports/{newsletter_slug}.html",
+        "w",
+    ) as file:
         file.write(str(soup))
 
     return newsletter_slug, newsletter_nicename
