@@ -100,4 +100,4 @@ jobs:
             --body "Adds the **${NEWSLETTER_NICENAME}** newsletter to the archive in the docs." \
             --label "documentation" \
             --assignee indexing \
-            --repo $GITHUB_REPOSITORY
+            --draft
