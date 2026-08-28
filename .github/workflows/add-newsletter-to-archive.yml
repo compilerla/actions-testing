@@ -54,15 +54,15 @@ jobs:
             // Create the new card lines
             newCard = `
 
-              -   ### :material-email-newsletter: ${NEWSLETTER_NICENAME}
+                -   ### :material-email-newsletter: ${NEWSLETTER_NICENAME}
 
-                    *Subtitle TKTKTK*
+                      *Subtitle TKTKTK*
 
-                    ---
+                      ---
 
-                    Summary TKTKTK
+                      Summary TKTKTK
 
-                  [Read full newsletter →](${NEWSLETTER_SLUG}/)
+                    [Read full newsletter →](${NEWSLETTER_SLUG}/)
 
             `;
 
