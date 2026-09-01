@@ -8,7 +8,7 @@ export const addCardToIndex = ({ core }) => {
   let content = readFileSync(filePath, "utf8");
 
   // Create the new card lines
-  newCard = `
+  const newCard = `
       -   ### :material-email-newsletter: ${NEWSLETTER_NICENAME}
 
               *Subtitle TKTKTK*
