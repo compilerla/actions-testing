@@ -45,7 +45,7 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # 9.0.0
         with:
           script: |
-            const script = require('${{ github.workspace }}/.github/workflows/add-newsletter-to-card/add-card-to-index.js')
+            const script = require('${{ github.workspace }}/.github/workflows/add-newsletter-to-archive/add-card-to-index.js')
             console.log(script({core}))
 
       - name: Commit changes and open PR
