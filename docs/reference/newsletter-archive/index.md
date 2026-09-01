@@ -12,6 +12,19 @@ Most months we send a newsletter to share product updates, adoption metrics, and
 
     ## 2026 {.sr-only .insertion-point}
 
+
+    -   ### :material-email-newsletter: July 2026
+
+          *Subtitle TKTKTK*
+
+          ---
+
+          Summary TKTKTK
+
+        [Read full newsletter →](2026-07/)
+
+
+
     -   ### :material-email-newsletter: July 2026
 
           *Cal-ITP Benefits goes national*
