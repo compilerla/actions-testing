@@ -1,4 +1,10 @@
-# :material-email-newsletter: {{NEWSLETTER_NICENAME}}
+---
+title: "Cal-ITP Benefits Newsletter: {{NEWSLETTER_NICENAME}}"
+---
+
+[← Back to archive](../#{{NEWSLETTER_YEAR}}_1)
+
+# :material-email-newsletter: Cal-ITP Benefits Newsletter: {{NEWSLETTER_NICENAME}}
 
 _Subtitle TKTKTK_
 

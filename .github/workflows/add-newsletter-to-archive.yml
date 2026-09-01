@@ -22,7 +22,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # 7.0.0
         with:
-          python-version: "3.11"
+          python-version-file: .github/workflows/.python-version
 
       - name: Install dependencies
         run: pip install "hubspot-api-client==12.0.0" "requests==2.34.2" "beautifulsoup4==4.15.0"
@@ -39,59 +39,14 @@ jobs:
           cp .github/workflows/add-newsletter-to-archive/shell-page-template.md $NEW_FILE
           sed -i "s/{{NEWSLETTER_NICENAME}}/${NEWSLETTER_NICENAME}/g" $NEW_FILE
           sed -i "s/{{NEWSLETTER_SLUG}}/${NEWSLETTER_SLUG}/g" $NEW_FILE
+          sed -i "s/{{NEWSLETTER_YEAR}}/${NEWSLETTER_YEAR}/g" $NEW_FILE
 
       - name: Add card to index
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # 9.0.0
         with:
           script: |
-            const fs = require("fs")
-            const { NEWSLETTER_NICENAME, NEWSLETTER_SLUG } = process.env;
-
-            // Read the current index file
-            const filePath = "docs/reference/newsletter-archive/index.md";
-            let content = fs.readFileSync(filePath, "utf8");
-
-            // Create the new card lines
-            newCard = `
-
-                -   ### :material-email-newsletter: ${NEWSLETTER_NICENAME}
-
-                      *Subtitle TKTKTK*
-
-                      ---
-
-                      Summary TKTKTK
-
-                    [Read full newsletter →](${NEWSLETTER_SLUG}/)
-
-            `;
-
-            // Find the current year's section
-            const lines = content.split("\n");
-            let currentYearIdx = -1;
-
-            for (let i = 0; i < lines.length; i++) {
-              if (lines[i].includes(".insertion-point")) {
-                currentYearIdx = i;
-                break;
-              }
-            }
-
-            // Insert the new card at the top of the current year section
-            if (currentYearIdx !== -1) {
-              lines.splice(currentYearIdx + 1, 0, newCard);
-              content = lines.join("\n");
-            } else {
-              core.error("Newsletter index insertion point not found.");
-              core.setFailed();
-            }
-
-            // Update the file
-            try {
-              fs.writeFileSync(filePath, content);
-            } catch (err) {
-              core.error("Error updating newsletter index:", err);
-            }
+            const script = require('./add-newsletter-to-card/add-card-to-index.js')
+            console.log(script({core}))
 
       - name: Commit changes and open PR
         env:
