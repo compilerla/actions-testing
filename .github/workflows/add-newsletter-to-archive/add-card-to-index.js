@@ -9,15 +9,15 @@ export const addCardToIndex = ({ core }) => {
 
   // Create the new card lines
   const newCard = `
-      -   ### :material-email-newsletter: ${NEWSLETTER_NICENAME}
+    -   ### :material-email-newsletter: ${NEWSLETTER_NICENAME}
 
-              *Subtitle TKTKTK*
+          *Subtitle TKTKTK*
 
-              ---
+          ---
 
-              Summary TKTKTK
+          Summary TKTKTK
 
-          [Read full newsletter →](${NEWSLETTER_SLUG}/)`;
+        [Read full newsletter →](${NEWSLETTER_SLUG}/)`;
 
   // Find the current year's section
   const lines = content.split("\n");
